@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CSM Usage Tracker – Pod View</title>
+<style>
+:root{--bg:#f1f3f4;--card:#fff;--tx:#1f2933;--mu:#6b7785;--br:#e2e6ea;--hd:#17a083;--gn:#1f9d55;--rd:#d93a2b;--am:#d98a00;--ac:#2b3a9e;--soft:#f6f7f8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191c;--card:#20262b;--tx:#e8ecef;--mu:#98a4af;--br:#333b42;--hd:#0f7f69;--gn:#4cc47f;--rd:#ff6b5b;--am:#f0a830;--ac:#8c9bff;--soft:#2a3137;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15191c;--card:#20262b;--tx:#e8ecef;--mu:#98a4af;--br:#333b42;--hd:#0f7f69;--gn:#4cc47f;--rd:#ff6b5b;--am:#f0a830;--ac:#8c9bff;--soft:#2a3137;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--hd);color:#fff;display:flex;gap:6px;align-items:center;padding:10px 16px;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.logo{font-weight:700;font-size:17px;margin-right:12px}
+nav button{background:none;border:1px solid transparent;color:#fff;padding:7px 13px;border-radius:9px;font:inherit;cursor:pointer}
+nav button.on{border-color:#fff;background:rgba(255,255,255,.14)}
+main{max-width:1100px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 4px;font-size:18px;font-weight:600}h3{margin:14px 0 6px;font-size:14px;color:var(--mu);font-weight:600}
+.sub{color:var(--mu);font-size:12.5px;margin-bottom:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--soft);border:1px solid var(--br);border-radius:12px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.kpi:hover{border-color:var(--hd)}.kpi b{display:block;font-size:26px;margin-top:2px}.kpi span{color:var(--mu);font-size:12px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;color:#fff}
+.g{background:var(--gn)}.r{background:var(--rd)}.a{background:var(--am)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.cc{background:var(--soft);border:1px solid var(--br);border-radius:12px;padding:12px;margin-bottom:9px;cursor:pointer}
+.cc:hover{border-color:var(--hd)}.cc .t{display:flex;justify-content:space-between;font-weight:600;margin-bottom:5px}
+.cc div.m{display:flex;gap:14px;flex-wrap:wrap;color:var(--mu);font-size:12.5px}.cc div.m b{color:var(--tx)}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px}.bar .n{width:140px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .tr{flex:1;background:var(--soft);border-radius:6px;height:18px;overflow:hidden}.bar .f{height:100%;border-radius:6px}.bar .v{width:60px;text-align:right;flex:none}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:720px}
+th{text-align:left;font-size:12px;color:var(--mu);padding:8px;border-bottom:1px solid var(--br);cursor:pointer;white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--br)}tr.row{cursor:pointer}tr.row:hover td{background:var(--soft)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:calc(30px + env(safe-area-inset-top,0px)) 12px 20px;z-index:20;overflow:auto}
+.modal.on{display:flex}.box{background:var(--card);border-radius:14px;padding:18px;max-width:640px;width:100%;border:1px solid var(--br)}
+.x{float:right;background:none;border:0;color:var(--mu);font-size:22px;cursor:pointer}
+input[type=text]{padding:7px 10px;border:1px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;width:240px;max-width:100%}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}.rule{background:var(--soft);border:1px solid var(--br);border-radius:10px;padding:10px;font-size:12.5px}
+.rule b{display:block;margin-bottom:3px;font-size:13px}.note{background:var(--soft);border-left:3px solid var(--hd);padding:10px 12px;border-radius:8px;font-size:12.5px;color:var(--mu)}
+.chips span{display:inline-block;background:var(--soft);border:1px solid var(--br);border-radius:6px;padding:1px 7px;margin:1px 2px 1px 0;font-size:11.5px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}.ph{font-size:12px;color:var(--mu)}
+@media(max-width:560px){.bar .n{width:90px}}
+</style></head><body>
+<header><span class="logo">Usage Tracker · CSM pod view</span>
+<nav id="nav"></nav></header>
+<main id="main"></main>
+<div class="modal" id="modal"><div class="box" id="box"></div></div>
+<script>
+const TODAY=new Date("2026-11-24");
+const days=(a,b)=>Math.round((b-a)/864e5);
+const money=n=>"$"+Math.round(n/1000)+"K";
+// Every figure below is from the case study. Start and renewal dates are worked back from the tenure and renewal windows it states. Blank (null) = not given in the case.
+const C=[
+{n:"Riverside Water Authority",seg:"Water",loc:"NC",arr:85000,start:"2025-05-24",renew:"2027-03-24",health:8.5,csat:4.7,tix:2,win:90,adopt:85,team:25,roles:"5 admins · 15 field · 5 billing",qbr:60,mobile:60,login:"Daily (admins), 3x a week (field)",usage:{Billing:"Strong","Work orders":"Strong","Customer portal":"Strong","Asset mgmt":"Not yet introduced"},note:"Advocacy and expansion account. ROI: billing cycle −28%, work-order completion +15%."},
+{n:"Lakeside Electric Coop",seg:"Electric",loc:"MT",arr:62000,start:"2025-12-24",renew:"2026-12-24",health:5.2,csat:3.8,tix:8,win:90,adopt:45,team:12,roles:"2 admins · 8 field · 2 billing",qbr:120,mobile:15,login:"Daily (billing only), weekly or less (others)",usage:{Billing:"Heavy","Work orders":"Barely used","Customer portal":"Not given","Asset mgmt":"Barely used"},note:"Auto-renews unless 30-day notice. 8 tickets, all training-related. No documented ROI."},
+{n:"Greenfield Gas & Water",seg:"Gas & Water",loc:"AZ",arr:95000,start:"2026-10-13",renew:null,health:6.0,csat:4.2,tix:12,win:30,adopt:null,onb:65,team:35,roles:"8 admins · 20 field · 7 billing",qbr:null,mobile:null,login:"Not live yet",usage:{Billing:"Not given","Work orders":"Not given","Customer portal":"Not given","Asset mgmt":"Not given"},note:"Onboarding: 65% complete, config 80%, training 50%. Go-live missed; migration blocked by customer IT."},
+{n:"Metro City Utilities",seg:"Water",loc:"TX",arr:125000,start:"2026-02-24",renew:"2027-02-24",health:4.8,csat:3.2,tix:24,win:90,adopt:55,team:50,roles:"12 admins · 30 field · 8 billing",qbr:90,mobile:null,login:"Down 40% in 3 months",usage:{Billing:"Not given","Work orders":"Not given","Customer portal":"Not given","Asset mgmt":"Not given"},note:"Formal complaint, 3 outages, mobile app crashing. Board meeting in 2 weeks. Sponsor silent."}
+];
+// Priority checks: each scores Green 0 / Amber 1 / Red 2. Total out of 10.
+const CK=[
+{k:"Renewal",rule:"Red: within 30 days · Amber: within 120 days",v:c=>c.renew?days(TODAY,new Date(c.renew)):null,fmt:v=>v==null?"Not set":v+" days",s:v=>v==null?0:v<=30?2:v<=120?1:0},
+{k:"CSAT",rule:"Red: below 3.5 · Amber: below 4.5",v:c=>c.csat,fmt:v=>v+" / 5",s:v=>v<3.5?2:v<4.5?1:0},
+{k:"Tickets per month",rule:"Red: 8 or more · Amber: 2 or more",v:c=>c.tix/(c.win/30),fmt:v=>(Math.round(v*10)/10)+" / mo",s:v=>v>=8?2:v>=2?1:0},
+{k:"Health score",rule:"Red: below 5 · Amber: below 7",v:c=>c.health,fmt:v=>v+" / 10",s:v=>v<5?2:v<7?1:0},
+{k:"Adoption",rule:"Red: below 50% · Amber: below 70%. Greenfield uses onboarding progress.",v:c=>c.adopt!=null?c.adopt:c.onb,fmt:v=>v+"%",s:v=>v<50?2:v<70?1:0}
+];
+C.forEach(c=>{c.ten=Math.round(days(new Date(c.start),TODAY)/30.4*10)/10;c.dr=c.renew?days(TODAY,new Date(c.renew)):null;c.tpm=Math.round(c.tix/(c.win/30)*10)/10;c.qdue=c.qbr==null?null:90-c.qbr;
+c.chk=CK.map(k=>{const v=k.v(c);return{v,s:k.s(v),t:k.fmt(v)}});c.score=c.chk.reduce((a,x)=>a+x.s,0);
+c.band=c.score>=6?"High":c.score>=3?"Medium":"Low";c.key=c.health>=7;c.risky=c.band=="High"});
+C.sort((a,b)=>b.score-a.score||(a.dr??9999)-(b.dr??9999)||b.arr-a.arr);
+const byK=(f,desc=true)=>[...C].sort((a,b)=>desc?f(b)-f(a):f(a)-f(b));
+const col=(v,g,a)=>v>=g?"var(--gn)":v>=a?"var(--am)":"var(--rd)";
+const sc=s=>s==2?"var(--rd)":s==1?"var(--am)":"var(--gn)";
+const tot=k=>C.reduce((s,c)=>s+c[k],0),avg=k=>tot(k)/C.length;
+let tab="Dashboard",sortK="score",sortD=true,q="";
+const tabs=["Dashboard","Customers","Features","Priority & QBR"];
+const nv=()=>document.getElementById("nav").innerHTML=tabs.map(t=>`<button class="${t==tab?"on":""}" onclick="go('${t}')">${t}</button>`).join("");
+function go(t){tab=t;render()}
+function open_(h){box.innerHTML='<button class="x" onclick="closeM()">×</button>'+h;modal.classList.add("on")}
+function closeM(){modal.classList.remove("on")}
+modal.onclick=e=>{if(e.target==modal)closeM()};
+function bars(list,f,fmt,cf,max){max=max||Math.max(...list.map(f));return list.map(c=>`<div class="bar"><div class="n">${c.n}</div><div class="tr"><div class="f" style="width:${Math.max(3,f(c)/max*100)}%;background:${cf(c)}"></div></div><div class="v">${fmt(f(c))}</div></div>`).join("")}
+const KP={
+arr:{l:"Total ARR",v:()=>money(tot("arr")),t:"ARR, highest first",f:c=>c.arr,fmt:money,c:c=>c.risky?"var(--rd)":"var(--ac)"},
+risk:{l:"ARR in High priority",v:()=>money(C.filter(c=>c.risky).reduce((s,c)=>s+c.arr,0)),t:"Priority score, highest first",f:c=>c.score,fmt:v=>v+" / 10",c:c=>c.risky?"var(--rd)":"var(--am)"},
+health:{l:"Average health",v:()=>avg("health").toFixed(1)+" / 10",t:"Health score, lowest first",f:c=>c.health,asc:1,fmt:v=>v,c:c=>col(c.health,7,5)},
+csat:{l:"Average CSAT",v:()=>avg("csat").toFixed(1)+" / 5",t:"CSAT, lowest first",f:c=>c.csat,asc:1,fmt:v=>v,c:c=>col(c.csat,4.5,3.5)},
+tix:{l:"Tickets per month",v:()=>Math.round(C.reduce((s,c)=>s+c.tpm,0))+" / mo",t:"Tickets per month, most first",f:c=>c.tpm,fmt:v=>v+" / mo",c:c=>c.tpm>=8?"var(--rd)":c.tpm>=2?"var(--am)":"var(--gn)"},
+ren:{l:"Renewing ≤120 days",v:()=>money(C.filter(c=>c.dr!=null&&c.dr<=120).reduce((s,c)=>s+c.arr,0)),t:"Days to renewal, soonest first",f:c=>c.dr??9999,asc:1,fmt:v=>v==9999?"Not set":v+" d",c:c=>c.dr==null?"var(--mu)":col(c.dr,121,31)}
+};
+function kpiModal(id){const x=KP[id],l=byK(x.f,!x.asc);open_(`<h2>${x.t}</h2><div class="sub">Click a customer elsewhere for the full profile.</div>`+bars(l.filter(c=>x.f(c)!=9999),x.f,x.fmt,x.c)+`<h3>Detail</h3>`+l.map((c,i)=>`<div class="cc" onclick="detail('${c.n}')"><div class="t"><span>${i+1}. ${c.n}</span><span>${money(c.arr)}</span></div><div class="m"><span>Health <b>${c.health}</b></span><span>CSAT <b>${c.csat}</b></span><span>Tickets <b>${c.tix} / ${c.win}d</b></span><span>Renewal <b>${c.dr==null?"Not set":c.dr+"d"}</b></span></div></div>`).join(""))}
+function card(c){return `<div class="cc" onclick="detail('${c.n}')"><div class="t"><span>${c.n}</span><span class="pill ${c.band=="High"?"r":c.band=="Medium"?"a":"g"}">${c.band} priority</span></div><div class="m"><span>ARR <b>${money(c.arr)}</b></span><span>Team <b>${c.team}</b></span><span>Health <b style="color:${col(c.health,7,5)}">${c.health}</b></span><span>CSAT <b>${c.csat}</b></span><span>Tickets <b>${c.tix}/${c.win}d</b></span><span>Renewal <b>${c.dr==null?"Not set":c.dr+"d"}</b></span></div></div>`}
+function dash(){
+return `<div class="card"><h2>Overview</h2><div class="sub">Pod of 4 customers. Click any metric to deep-dive. Snapshot: 24 Nov 2026.</div><div class="kpis">`+
+Object.entries(KP).map(([i,x])=>`<button class="kpi" onclick="kpiModal('${i}')"><span>${x.l}</span><b>${x.v()}</b></button>`).join("")+`</div></div>
+<div class="card"><h2>ARR ranking</h2><div class="sub">Highest to lowest. Red = High priority.</div>${bars(byK(c=>c.arr),c=>c.arr,money,KP.arr.c)}</div>
+<div class="two"><div class="card"><h2 style="color:var(--gn)">Key customers · ${C.filter(c=>c.key).length}</h2><div class="sub">Health score 7 or above</div>${C.filter(c=>c.key).map(card).join("")}</div>
+<div class="card"><h2 style="color:var(--rd)">Risky customers · ${C.filter(c=>c.risky).length}</h2><div class="sub">High priority: score 6 or more out of 10</div>${C.filter(c=>c.risky).map(card).join("")}</div></div>
+<div class="card"><h2>Watch list</h2><div class="sub">Neither key nor high priority</div>${C.filter(c=>!c.key&&!c.risky).map(card).join("")}</div>`}
+function detail(n){const c=C.find(x=>x.n==n);open_(`<h2>${c.n}</h2><div class="sub">${c.seg} · ${c.loc}</div><div class="note" style="margin-bottom:10px">${c.note}</div>
+<div class="kpis">${[["ARR",money(c.arr)],["Customer since",c.start],["Tenure",c.ten+" months"],["Renewal",c.renew?c.renew+" ("+c.dr+"d)":"Not set yet"],["Health",c.health+" / 10"],["CSAT",c.csat+" / 5"],["Tickets",c.tix+" in "+c.win+" days"],["Last QBR",c.qbr==null?"None yet":c.qbr+" days ago"],["Team size",c.team],["Logins",c.login]].map(a=>`<div class="kpi" style="cursor:default"><span>${a[0]}</span><b style="font-size:15px">${a[1]}</b></div>`).join("")}</div>
+<div class="sub" style="margin-top:6px">Team: ${c.roles}</div>
+<h3>Priority score: ${c.score} of 10 (${c.band})</h3>${CK.map((k,i)=>`<div class="bar"><div class="n">${k.k}</div><div class="tr"><div class="f" style="width:${c.chk[i].s*50||3}%;background:${sc(c.chk[i].s)}"></div></div><div class="v" style="width:90px">${c.chk[i].t}</div></div>`).join("")}`)}
+function cust(){const H=[["Customer","n"],["ARR","arr"],["Tenure (mo)","ten"],["Renewal in (days)","dr"],["Team size","team"],["Health","health"],["CSAT","csat"],["Tickets / mo","tpm"],["Score","score"]];
+return `<div class="card"><h2>All customers</h2><div class="sub">Individual metrics. Click a header to sort, a row for the profile.</div><input type="text" placeholder="Search…" value="${q}" oninput="q=this.value;rowsOnly()"><div class="tw"><table><thead><tr>${H.map(h=>`<th onclick="srt('${h[1]}')">${h[0]} ↕</th>`).join("")}</tr></thead><tbody id="rows"></tbody></table></div></div>`}
+function rowsHtml(){let l=C.filter(c=>c.n.toLowerCase().includes(q.toLowerCase()));const g=c=>c[sortK]==null?9999:c[sortK];
+l.sort((a,b)=>sortK=="n"?(sortD?1:-1)*a.n.localeCompare(b.n):sortD?g(b)-g(a):g(a)-g(b));
+return l.map(c=>`<tr class="row" onclick="detail('${c.n}')"><td><b>${c.n}</b></td><td>${money(c.arr)}</td><td>${c.ten}</td><td style="color:${c.dr==null?"var(--mu)":col(c.dr,121,31)}">${c.dr==null?"Not set":c.dr}</td><td>${c.team}</td><td style="color:${col(c.health,7,5)}">${c.health}</td><td style="color:${col(c.csat,4.5,3.5)}">${c.csat}</td><td>${c.tpm}</td><td><b>${c.score}</b></td></tr>`).join("")}
+function rowsOnly(){document.getElementById("rows").innerHTML=rowsHtml()}
+function srt(k){sortD=sortK==k?!sortD:true;sortK=k;rowsOnly()}
+function feat(){
+const pct=(l,f,hdr)=>`<h3>${hdr}</h3>`+C.map(c=>f(c)==null?`<div class="bar"><div class="n">${c.n}</div><div class="v" style="width:auto;color:var(--mu)">Not given in the case</div></div>`:`<div class="bar"><div class="n">${c.n}</div><div class="tr"><div class="f" style="width:${Math.max(f(c),2)}%;background:${col(f(c),70,50)}"></div></div><div class="v">${f(c)}%</div></div>`).join("");
+const M=["Billing","Work orders","Customer portal","Asset mgmt"];
+return `<div class="card"><h2>Feature adoption</h2><div class="sub">Target: 70% or more. Pod figure from the three live accounts: ${Math.round((85+45+55)/3)}%. Greenfield is not live, so it has onboarding progress instead.</div>
+${pct(0,c=>c.adopt,"Overall feature adoption")}${pct(0,c=>c.mobile,"Field mobile app adoption")}
+<h3>Greenfield onboarding (not yet live)</h3>${[["Overall progress",65],["Configuration",80],["Staff trained",50]].map(a=>`<div class="bar"><div class="n">${a[0]}</div><div class="tr"><div class="f" style="width:${a[1]}%;background:${col(a[1],70,50)}"></div></div><div class="v">${a[1]}%</div></div>`).join("")}</div>
+<div class="card"><h2>Module usage, as described in the case</h2><div class="tw"><table><thead><tr><th>Customer</th>${M.map(m=>`<th>${m}</th>`).join("")}</tr></thead><tbody>${C.map(c=>`<tr class="row" onclick="detail('${c.n}')"><td><b>${c.n}</b></td>${M.map(m=>{const u=c.usage[m];return `<td style="color:${/Strong|Heavy/.test(u)?"var(--gn)":/Barely/.test(u)?"var(--rd)":"var(--mu)"}">${u}</td>`}).join("")}</tr>`).join("")}</tbody></table></div><div class="ph" style="margin-top:8px">The case gives module detail only for Riverside and Lakeside. Per-feature tracking (as in the live tool) would fill the rest.</div></div>`}
+function prio(){return `<div class="card"><h2>Priority ranking</h2><div class="sub">Five checks, scored Green 0, Amber 1, Red 2. Add them up for a score out of 10. Ties go to the sooner renewal.</div>
+<div class="tw"><table><thead><tr><th>#</th><th>Customer</th>${CK.map(k=>`<th>${k.k}</th>`).join("")}<th>Score</th><th>Priority</th></tr></thead><tbody>${C.map((c,i)=>`<tr class="row" onclick="detail('${c.n}')"><td>${i+1}</td><td><b>${c.n}</b></td>${c.chk.map(x=>`<td><span class="dot" style="background:${sc(x.s)}"></span>${x.t}</td>`).join("")}<td><b>${c.score}</b></td><td><span class="pill ${c.band=="High"?"r":c.band=="Medium"?"a":"g"}">${c.band}</span></td></tr>`).join("")}</tbody></table></div></div>
+<div class="card"><h2>The rules</h2><div class="rules">${CK.map(k=>`<div class="rule"><b>${k.k}</b>${k.rule}</div>`).join("")}<div class="rule"><b>Priority bands</b>High: 6 to 10 · Medium: 3 to 5 · Low: 0 to 2</div></div></div>
+<div class="card"><h2>QBR tracker</h2><div class="sub">Cadence: every 90 days from the last QBR.</div><div class="tw"><table><thead><tr><th>Customer</th><th>Last QBR</th><th>Next due</th><th>Status</th></tr></thead><tbody>${C.map(c=>`<tr><td><b>${c.n}</b></td><td>${c.qbr==null?"None":c.qbr+" days ago"}</td><td>${c.qdue==null?"Schedule at go-live":c.qdue<0?"Overdue by "+(-c.qdue)+" days":c.qdue==0?"Due now":"In "+c.qdue+" days"}</td><td><span class="pill ${c.qdue==null?"a":c.qdue<=0?"r":"g"}">${c.qdue==null?"Not started":c.qdue<0?"Overdue":c.qdue==0?"Due now":"On track"}</span></td></tr>`).join("")}</tbody></table></div></div>
+<div class="card note"><b>Keeping it live.</b> The data here comes from the case study. In use, ARR, start and renewal dates would sync from the CRM, tickets and CSAT from the support tool, and usage from product analytics. Health scores and QBR dates would be kept by the CSM. The scores recalculate from whatever is loaded.</div>`}
+function rowsHtmlInit(){}
+function render(){nv();main.innerHTML={Dashboard:dash,Customers:cust,Features:feat,"Priority & QBR":prio}[tab]();if(tab=="Customers")rowsOnly();window.scrollTo(0,0)}
+const hs=location.hash.slice(1);const m={dashboard:"Dashboard",customers:"Customers",features:"Features",priority:"Priority & QBR"};if(m[hs])tab=m[hs];
+render();
+</script></body></html>
